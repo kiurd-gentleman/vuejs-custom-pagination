@@ -1,19 +1,23 @@
 <template>
   <div>
-
-    <table class="table table-bordered">
-      <thead>
-      <tr>
-        <th scope="col" v-for="(header , index) in headers" :key="index">{{ header.text }}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="(singleData , index) in data" :key="index">
-        <th scope="row" v-for="(header , headerIndex) in headers" :key="headerIndex">{{singleData[header.value]}}</th>
-      </tr>
-      </tbody>
-    </table>
-    <DataTablePagination :itemLength="itemLength" @dataChange="dataChange"></DataTablePagination>
+      <div v-if="data.length === 0">
+        <img  src="@/assets/loader2.gif" alt="loader">
+      </div>
+      <div v-else>
+        <table class="table table-bordered">
+          <thead>
+          <tr>
+            <th scope="col" v-for="(header , index) in headers" :key="index">{{ header.text }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="(singleData , index) in data" :key="index">
+            <th scope="row" v-for="(header , headerIndex) in headers" :key="headerIndex">{{singleData[header.value]}}</th>
+          </tr>
+          </tbody>
+        </table>
+        <DataTablePagination :itemLength="itemLength" @dataChange="dataChange"></DataTablePagination>
+      </div>
   </div>
 
 </template>
@@ -21,6 +25,7 @@
 <script>
 import axios from "axios";
 import DataTablePagination from "@/components/DataTablePagination";
+// import loader from "@/assets/loader.gif";
 
 export default {
   name: "DataTableComponent",
@@ -44,7 +49,7 @@ export default {
 
     },
     dataChange(value){
-      this.skip = value * 10;
+      this.skip = (value * 10) - 10;
       console.log(value , 'dataChange');
     },
     getData(){
