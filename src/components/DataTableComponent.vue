@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <table class="table table-bordered">
       <thead>
       <tr>
@@ -12,7 +13,7 @@
       </tr>
       </tbody>
     </table>
-    <DataTablePagination :itemLength="itemLength"></DataTablePagination>
+    <DataTablePagination :itemLength="itemLength" @dataChange="dataChange"></DataTablePagination>
   </div>
 
 </template>
@@ -34,6 +35,7 @@ export default {
     return{
       data:[],
       itemLength: 10,
+      skip: 0,
     }
   },
   methods: {
@@ -41,20 +43,29 @@ export default {
       console.log('pagination');
 
     },
-    functionName(pageNumber){
-      console.log(pageNumber);
+    dataChange(value){
+      this.skip = value * 10;
+      console.log(value , 'dataChange');
+    },
+    getData(){
+      axios.get('https://dummyjson.com/users?limit=10&skip=' + this.skip)
+          .then(response => {
+            this.data = response.data.users;
+            this.itemLength = 100;
+            console.log(response);
+          })
+          .catch(error => {
+            console.log(error);
+          });
     }
   },
   mounted() {
-    axios.get('https://dummyjson.com/users?limit=50&skip=0')
-      .then(response => {
-        this.data = response.data.users;
-        this.itemLength = response.data.users.length;
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    this.getData();
+  },
+  watch: {
+    skip: function () {
+      this.getData();
+    }
   }
 }
 </script>
