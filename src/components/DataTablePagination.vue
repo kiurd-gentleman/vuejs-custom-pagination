@@ -16,7 +16,9 @@
         <li><a class="btn border" @click="handlePreviousButton">Previous</a></li>
         <li v-if="showFirstPageIndex"><a class="btn border" @click="handelFirstButton">1</a></li>
         <li v-if="showLessDots"><a class="btn border" @click="handelFirstDotsButton">...</a></li>
-        <li v-for="n in pageRange" :key="n" class=""><a class="btn border" @click="handelMiddleButton(n)">{{ n }}</a>
+        <li v-for="n in pageRange" :key="n" class=""><a class="btn border" :class="[
+          currentPage === n ? active : '',
+        ]" @click="handelMiddleButton(n)">{{ n }}</a>
         </li>
         <li v-if="showMoreDots"><a class="btn border" @click="handelSecondDotsButton">...</a></li>
         <li v-if="showLastPageIndex" @click="handelLastButton"><a class="btn border">{{ this.pageCount }}</a></li>
@@ -49,6 +51,7 @@ export default {
     return {
       currentPage: 1,
       pageCount: '',
+      active: 'btn-info'
     }
   },
   computed: {
@@ -90,13 +93,11 @@ export default {
       if (this.currentPage > 1) {
         this.currentPage -= 1;
       }
-      console.log('dataChange');
     },
     handelNextButton() {
       if (this.currentPage < this.pageCount) {
         this.currentPage += 1;
       }
-      console.log('dataChange');
     },
     handelFirstButton() {
       this.currentPage = 1;

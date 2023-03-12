@@ -1,10 +1,11 @@
 <template>
   <div>
-      <div v-if="data.length === 0">
-        <img  src="@/assets/loader2.gif" alt="loader">
+      <div >
+
       </div>
-      <div v-else>
-        <table class="table table-bordered">
+      <div >
+        <img v-if="is_loading === true"  src="@/assets/loader2.gif" alt="loader">
+        <table v-else class="table table-bordered">
           <thead>
           <tr>
             <th scope="col" v-for="(header , index) in headers" :key="index">{{ header.text }}</th>
@@ -41,6 +42,7 @@ export default {
       data:[],
       itemLength: 10,
       skip: 0,
+      is_loading: false,
     }
   },
   methods: {
@@ -53,11 +55,13 @@ export default {
       console.log(value , 'dataChange');
     },
     getData(){
+      this.is_loading = true;
       axios.get('https://dummyjson.com/users?limit=10&skip=' + this.skip)
           .then(response => {
             this.data = response.data.users;
             this.itemLength = 100;
             console.log(response);
+            this.is_loading = false;
           })
           .catch(error => {
             console.log(error);
