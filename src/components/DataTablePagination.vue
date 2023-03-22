@@ -1,29 +1,22 @@
 <template>
   <div>
-    <!--    <div class="btn-group">-->
-    <!--      <button class="btn border">Previous</button>-->
-    <!--      <button class="btn border">1</button>-->
-    <!--      <button class="btn border btn-info">2</button>-->
-    <!--      <button class="btn border">3</button>-->
-    <!--      <button class="btn border disabled">...</button>-->
-    <!--      <button class="btn border">10</button>-->
-    <!--      <button class="btn border">11</button>-->
-    <!--      <button class="btn border">12</button>-->
-    <!--      <button class="btn border">Next</button>-->
-    <!--    </div>-->
     <div>
       <ul v-if="pageCount > 1" class="pagination">
         <li><a class="btn border" @click="handlePreviousButton">Previous</a></li>
-        <li v-if="showFirstPageIndex"><a class="btn border" @click="handelFirstButton">1</a></li>
-        <li v-if="showLessDots"><a class="btn border" @click="handelFirstDotsButton">...</a></li>
+        <li v-if="showFirstPageIndex"><a class="btn border" @click="this.currentPage = 1">1</a></li>
+        <li v-if="showLessDots"><a class="btn border" @click="this.currentPage = this.startPaginatorIndex - 1">...</a>
+        </li>
         <li v-for="n in pageRange" :key="n" class="">
           <a class="btn border" :class="[currentPage === n ? active : '',]"
-             @click="handelMiddleButton(n)">
+             @click="this.currentPage = n">
             {{ n }}
           </a>
         </li>
-        <li v-if="showMoreDots"><a class="btn border" @click="handelSecondDotsButton">...</a></li>
-        <li v-if="showLastPageIndex" @click="handelLastButton"><a class="btn border">{{ this.pageCount }}</a></li>
+        <li v-if="showMoreDots"><a class="btn border" @click="this.currentPage = this.endPaginatorIndex + 1">...</a>
+        </li>
+        <li v-if="showLastPageIndex" @click="this.currentPage = this.pageCount"><a class="btn border">{{
+            this.pageCount
+          }}</a></li>
         <li><a class="btn border" @click="handelNextButton">Next</a></li>
       </ul>
     </div>
@@ -45,6 +38,10 @@ export default {
   name: "DataTablePagination",
   props: {
     itemLength: {
+      type: Number,
+      required: true
+    },
+    itemPerPage: {
       type: Number,
       required: true
     }
@@ -81,7 +78,7 @@ export default {
     },
     showMoreDots() {
       return this.endPaginatorIndex < (this.pageCount - 1);
-    }
+    },
   },
   methods: {
     range(start, end) {
@@ -101,25 +98,10 @@ export default {
         this.currentPage += 1;
       }
     },
-    handelFirstButton() {
-      this.currentPage = 1;
-    },
-    handelFirstDotsButton() {
-      this.currentPage = this.startPaginatorIndex - 1;
-    },
-    handelMiddleButton(n) {
-      this.currentPage = n
-    },
-    handelSecondDotsButton() {
-      this.currentPage = this.endPaginatorIndex + 1;
-    },
-    handelLastButton() {
-      this.currentPage = this.pageCount;
-    }
   },
   watch: {
     itemLength: function () {
-      this.pageCount = this.itemLength / 10
+      this.pageCount = this.itemLength / this.itemPerPage
     },
     currentPage: function () {
       console.log('dataChange');
